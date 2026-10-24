@@ -2,94 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cally: page/focusedDate render loop</title>
-    <style>
-      body {
-        font-family: sans-serif;
-      }
-    </style>
   </head>
   <body>
     <h1>Page + focusedDate change in the same tick → infinite render loop</h1>
-    <p>
-      <strong>Warning:</strong> each button below freezes this tab (100% CPU,
-      memory climbs until the tab is killed). Open DevTools first if you want
-      to pause and inspect.
-    </p>
+    <section>
+      <p>
+        <strong>Warning:</strong> each red button below freezes this tab (100%
+        CPU, memory climbs until the tab is killed). Open DevTools first if you
+        want to pause and inspect.
+      </p>
+    </section>
 
-    <div id="home">
-      <calendar-date id="calendar" focused-date="2026-10-15">
-        <calendar-month></calendar-month>
-      </calendar-date>
-    </div>
-    <div id="elsewhere"></div>
+    <section>
+      <div id="home">
+        <calendar-date id="calendar" focused-date="2026-10-15">
+          <calendar-month></calendar-month>
+        </calendar-date>
+      </div>
+      <div id="elsewhere"></div>
+    </section>
 
-    <p>
-      <button id="next-and-focus" type="button">
-        1. Click "next" and set focusedDate in the same task
-      </button>
-    </p>
-    <p>
-      <button id="move-and-focus" type="button">
-        2. Page ahead, then move the element and set focusedDate in the same
-        task
-      </button>
-    </p>
-    <p>
-      Either change alone is fine:
-      <button id="next-only" type="button">"next" only</button>
-      <button id="focus-only" type="button">focusedDate only</button>
-      <output id="log"></output>
-    </p>
+    <section>
+      <p>
+        <button id="next-and-focus" class="freezes" type="button">
+          1. Click "next" and set focusedDate in the same task
+        </button>
+      </p>
+      <p>
+        <button id="move-and-focus" class="freezes" type="button">
+          2. Page ahead, then move the element and set focusedDate in the same
+          task
+        </button>
+      </p>
+    </section>
 
-    <script type="module">
-      import "../src/index.ts";
+    <section>
+      <p>
+        Either change alone is fine:
+        <button id="next-only" type="button">"next" only</button>
+        <button id="focus-only" type="button">focusedDate only</button>
+        <output id="log"></output>
+      </p>
+    </section>
 
-      const calendar = document.getElementById("calendar");
-      const log = document.getElementById("log");
-      const tick = () => new Promise((resolve) => setTimeout(resolve, 50));
-      const clickNext = () =>
-        calendar.shadowRoot.querySelector('[part~="next"]').click();
-
-      let focusDays = 0;
-      calendar.addEventListener("focusday", () => {
-        focusDays += 1;
-      });
-
-      const report = async (label) => {
-        const before = focusDays;
-        await tick();
-        log.textContent = `${label}: ${focusDays - before} focusday event(s), focusedDate=${calendar.focusedDate}`;
-      };
-
-      // 1. A page change and a focusedDate change land in the same render.
-      document.getElementById("next-and-focus").onclick = () => {
-        clickNext();
-        calendar.focusedDate = "2027-03-10";
-      };
-
-      // 2. Moving the element (disconnect + reconnect) re-runs the effects,
-      // so setting focusedDate in the same task also loops. This is what a
-      // modal library that re-parents its content on open does.
-      document.getElementById("move-and-focus").onclick = async () => {
-        clickNext();
-        await tick();
-        clickNext();
-        await tick();
-        document.getElementById("elsewhere").append(calendar);
-        calendar.focusedDate = "2026-10-15";
-      };
-
-      document.getElementById("next-only").onclick = () => {
-        clickNext();
-        report('"next" only');
-      };
-
-      document.getElementById("focus-only").onclick = () => {
-        calendar.focusedDate = "2027-03-10";
-        report("focusedDate only");
-      };
-    </script>
+    <script type="module" src="./script.js"></script>
   </body>
 </html>

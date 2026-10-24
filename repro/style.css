@@ -1,0 +1,24 @@
+body {
+  font-family: sans-serif;
+}
+
+.freezes {
+  background: #c62828;
+  border: 1px solid #8e0000;
+  color: #fff;
+}
+
+section {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-block: 1rem;
+  padding: 1rem;
+}
+
+section > :first-child {
+  margin-top: 0;
+}
+
+section > :last-child {
+  margin-bottom: 0;
+}
