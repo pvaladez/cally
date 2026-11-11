@@ -7,10 +7,10 @@
     <title>Cally: page/focusedDate render loop</title>
   </head>
   <body>
-    <h1>Page + focusedDate change in the same tick → infinite render loop</h1>
+    <h1>Move + focusedDate change in the same task → infinite render loop</h1>
     <section>
       <p>
-        <strong>Warning:</strong> each red button below freezes this tab (100%
+        <strong>Warning:</strong> the red button below freezes this tab (100%
         CPU, memory climbs until the tab is killed). Open DevTools first if you
         want to pause and inspect.
       </p>
@@ -27,22 +27,21 @@
 
     <section>
       <p>
-        <button id="next-and-focus" class="freezes" type="button">
-          1. Click "next" and set focusedDate in the same task
+        <button id="move-and-focus" class="freezes" type="button">
+          Move the element and set focusedDate to another month in the same task
         </button>
       </p>
       <p>
-        <button id="move-and-focus" class="freezes" type="button">
-          2. Page ahead, then move the element and set focusedDate in the same
-          task
-        </button>
+        This sets <code>focusedDate</code> to 10 March 2027. It only freezes if
+        the calendar is showing a month other than March 2027 (it starts on
+        October 2026). If you page to March first, it won't freeze.
       </p>
     </section>
 
     <section>
       <p>
         Either change alone is fine:
-        <button id="next-only" type="button">"next" only</button>
+        <button id="move-only" type="button">move only</button>
         <button id="focus-only" type="button">focusedDate only</button>
         <output id="log"></output>
       </p>
